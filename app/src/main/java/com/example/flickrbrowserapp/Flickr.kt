@@ -1,6 +1,7 @@
 package com.example.flickrbrowserapp
 
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -9,18 +10,21 @@ import android.util.Log
 import android.widget.EditText
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.load.engine.Resource
 import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.net.URL
+import android.content.Context
 
 class Flickr : AppCompatActivity() {
     var tag = "Flickr"
     var tags = "city"
     var base_Url = "https://www.flickr.com/services/rest/"
     val api_key = "6cbd737dc96c0be4a4892c3a36e23730"
-    private lateinit var constraintLayOut:ConstraintLayout
+    private lateinit var search : Drawable
     private lateinit var recView: RecyclerView
     private lateinit var rvAdapter: RecyclerViewAdapter
     lateinit var searchEditT: EditText
@@ -31,7 +35,6 @@ class Flickr : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_flickr)
         recView = findViewById(R.id.recView)
-        constraintLayOut = findViewById(R.id.constraintLayOut)
         rvAdapter = RecyclerViewAdapter(title,imgUrls,this)
         recView.adapter = rvAdapter
         recView.layoutManager = LinearLayoutManager(this)
@@ -45,7 +48,12 @@ class Flickr : AppCompatActivity() {
 
             override fun afterTextChanged(editable: Editable) {
                 //after the change calling the method and passing the search input
-                filter(editable.toString())
+                tags = editable.toString()
+                Log.d(tag,"suss$tags")
+                requestAPI()
+
+               // filter(editable.toString())
+
             }
         })
 
@@ -55,7 +63,8 @@ class Flickr : AppCompatActivity() {
     }
 
     private fun requestAPI() {
-
+    title.clear()
+        imgUrls.clear()
         CoroutineScope(Dispatchers.IO).launch {
             // we fetch the data
             val data = async { fetchData() }.await()
@@ -102,6 +111,7 @@ class Flickr : AppCompatActivity() {
 
     }
     private fun filter(text: String) {
+
         //new array list that will hold the filtered data
         val filteredNames = ArrayList<String>()
         //looping through existing elements and adding the element to filtered list

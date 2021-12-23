@@ -23,8 +23,7 @@ class RecyclerViewAdapter(
     var imgUrl: ArrayList<String>,
     var flicker: Flickr
 ) : RecyclerView.Adapter<RecyclerViewAdapter.ItemViewHolder>() {
-    //
-    val TAG = "Adapter"
+
 
     class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
